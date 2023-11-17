@@ -1,8 +1,13 @@
 package com.example.ttrpgmanager;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import java.util.ArrayList;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "Rpg.db";
@@ -47,5 +52,65 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // create new tables
         onCreate(db);
+    }
+
+    //tables with default information
+    public boolean initializeTables()
+    {
+        if(rowsInUsersTable() == 0)
+        {
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.execSQL("INSERT INTO " + USERS_TABLE + " VALUES('DMuser', 'password');");
+
+            db.close();
+
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
+    }
+
+    //checks if anything is in the users table
+    public int rowsInUsersTable()
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        int numRows = (int) DatabaseUtils.queryNumEntries(db, USERS_TABLE);
+
+        db.close();
+
+        return numRows;
+    }
+
+    //to store the user table
+    @SuppressLint("Range")
+    public ArrayList<User> getAllUserRows()
+    {
+        ArrayList<User> listOfUsers = new ArrayList<User>();
+        //select from table
+        String selectQry = "SELECT * FROM " + USERS_TABLE + ";";
+        //reading the database
+        SQLiteDatabase db = this.getReadableDatabase();
+        //cursor to cycle through
+        Cursor cursor = db.rawQuery(selectQry, null);
+        //table variables
+        String user;
+        String password;
+
+        if(cursor.moveToFirst())
+        {
+            do
+            {
+                user = cursor.getString(cursor.getColumnIndex("username"));
+                password = cursor.getString(cursor.getColumnIndex("password"));
+            }
+            while(cursor.moveToNext());
+        }
+        db.close();
+
+        return listOfUsers;
     }
 }
