@@ -13,6 +13,15 @@
         android:theme="@style/Theme.TtrpgManager"
         tools:targetApi="31">
         <activity
+            android:name=".AddUnit"
+            android:exported="false" />
+        <activity
+            android:name=".EditUnit"
+            android:exported="false" />
+        <activity
+            android:name=".PlayGame"
+            android:exported="false" />
+        <activity
             android:name=".GamesPage"
             android:exported="false" />
         <activity

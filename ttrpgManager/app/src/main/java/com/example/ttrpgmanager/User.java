@@ -1,6 +1,8 @@
 package com.example.ttrpgmanager;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
     private String username;
     private String password;
 
@@ -9,6 +11,11 @@ public class User {
         this.password = password;
     }
 
+    public User(){
+
+    }
+
+    //region Getters and Setters
     public String getUsername() {
         return username;
     }
@@ -24,5 +31,5 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
-
+    //endregion
 }

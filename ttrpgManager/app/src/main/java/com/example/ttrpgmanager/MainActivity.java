@@ -32,6 +32,8 @@ public class MainActivity extends AppCompatActivity
         listOfUsers = db.getAllUserRows();
 
         logInEventHandler();
+
+        //debugUserList();
     }
 
     public void logInEventHandler()
@@ -39,8 +41,20 @@ public class MainActivity extends AppCompatActivity
         btn_j_logIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Currently this passes the user we created from db.initializeTables()
+                gamePageIntent.putExtra("User", listOfUsers.get(0));
+
                 startActivity(gamePageIntent);
             }
         });
     }
+
+    private void debugUserList(){
+        for (int i = 0; i < db.rowsInUsersTable(); i++){
+            Log.d("User at " + i, listOfUsers.get(i).getUsername());
+            Log.d("User at " + i, listOfUsers.get(i).getPassword());
+        }
+    }
+
+
 }
