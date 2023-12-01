@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ListView;
 
 import java.util.ArrayList;
 
@@ -17,6 +19,9 @@ public class PlayGame extends AppCompatActivity {
     Button btn_j_addUnit;
     Button btn_j_advanceTurn;
     User curUser;
+    ArrayList<Unit> curGameUnits = new ArrayList<Unit>();
+    ListView lv_j_units;
+    UnitListAdapter unitAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,10 +32,16 @@ public class PlayGame extends AppCompatActivity {
         btn_j_back = findViewById(R.id.btn_play_back);
         btn_j_addUnit = findViewById(R.id.btn_play_addUnit);
         btn_j_advanceTurn = findViewById(R.id.btn_play_advanceTurn);
+        lv_j_units = findViewById(R.id.lv_play_units);
 
         curUser = getCurrentUser();
 
+        db = new DatabaseHelper(this);
+        db.initializeTables();
+        curGameUnits = db.getUnits();
+
         buttonEventHandler();
+        //fillUnitListView();
     }
 
     private void buttonEventHandler(){
@@ -83,5 +94,11 @@ public class PlayGame extends AppCompatActivity {
             return null;
         }
         return curUser;
+    }
+
+    public void fillUnitListView()
+    {
+        unitAdapter = new UnitListAdapter(this, curGameUnits);
+        lv_j_units.setAdapter(unitAdapter);
     }
 }

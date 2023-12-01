@@ -21,7 +21,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String NPC_PREFABS_TABLE = "NpcPrefabs";
     public DatabaseHelper(Context context) {
         // change version to recreate the database
-        super(context, DATABASE_NAME, null, 2);
+        super(context, DATABASE_NAME, null, 3);
     }
 
     @Override
@@ -36,8 +36,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // u1 (unit1) will contain a UnitID or it will be null (no unit)
         // currently the Games table is setup to hold 12 units (a mix of players and NPCS)
         db.execSQL("CREATE TABLE " + GAMES_TABLE + " (gameID INTEGER PRIMARY KEY AUTOINCREMENT," +
-                " DMUsername TEXT NOT NULL, u0 TEXT, u1 TEXT, u2 TEXT, u3 TEXT, u4 TEXT, u5 TEXT," +
-                " u6 TEXT, u7 TEXT, u8 TEXT, u9 TEXT, u10 TEXT, u11 TEXT, FOREIGN KEY (DMUsername)" +
+                " DMUsername TEXT NOT NULL, gameName TEXT, FOREIGN KEY (DMUsername)" +
                 " REFERENCES " + USERS_TABLE + "(Username));");
 
         //is probably important to differentiate NPCS and Characters so we will include an isNpc BIT (boolean)
@@ -75,7 +74,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(rowsInUsersTable() == 0)
         {
             SQLiteDatabase db = this.getWritableDatabase();
-            db.execSQL("INSERT INTO " + USERS_TABLE + " VALUES('DMuser', 'password');");
+            db.execSQL("INSERT INTO " + USERS_TABLE + " VALUES('DMleo', 'pass123');");
 
             db.close();
 
@@ -84,8 +83,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(rowsInGamesTable() == 0)
         {
             SQLiteDatabase db = this.getWritableDatabase();
-            db.execSQL("INSERT INTO " + GAMES_TABLE + " (DMUsername, u0, u1) VALUES('DMuser'," +
-                    " 'DummyCharacter', 'DummyNPC');");
+            db.execSQL("INSERT INTO " + GAMES_TABLE + " (DMUsername, gameName) VALUES('DMleo', 'Tower of Sycrus');");
+
+            db.close();
+
+            initTables = true;
+        }
+        if(rowsInUnitsTable() == 0)
+        {
+            //how to handle the booleans??? once the isNpc bool works then units listview should work i think?
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.execSQL("INSERT INTO " + ACTIVE_UNITS_TABLE + " (gameID, isNpc, name, maxHealth, currentHealth, initiative) " +
+                    " VALUES(1, 0, 'Noah', 100, 100, 0);");
+            db.execSQL("INSERT INTO " + ACTIVE_UNITS_TABLE + " (gameID, isNpc, name, maxHealth, currentHealth, initiative) " +
+                    " VALUES(1, 1, 'Xande', 100, 100, 0);");
 
             db.close();
 
@@ -146,10 +157,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public ArrayList<Game> getUsersGames(String username){
-        SQLiteDatabase db = getReadableDatabase();
+    @SuppressLint("Range")
+    public ArrayList<Game> getUsersGames()
+    {
+        ArrayList<Game> listOfGames = new ArrayList<Game>();
+        String selectQuery = "SELECT * FROM " + GAMES_TABLE + ";";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
 
-        return null;
+        Game tempGame = new Game();
+
+        if(cursor.moveToFirst())
+        {
+            do
+            {
+                //do i need the gameID too???
+                tempGame.setGameID(cursor.getInt(cursor.getColumnIndex("gameID")));
+                tempGame.setDMUsername(cursor.getString(cursor.getColumnIndex("DMUsername")));
+                tempGame.setGameName(cursor.getString(cursor.getColumnIndex("gameName")));
+
+                listOfGames.add(tempGame);
+            }
+            while(cursor.moveToNext());
+        }
+        db.close();
+
+        return listOfGames;
     }
 
     public int rowsInGamesTable(){
@@ -163,4 +196,49 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
     //endregion
 
+    //region UnitsTable
+    public int rowsInUnitsTable()
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        int numRows = (int) DatabaseUtils.queryNumEntries(db, ACTIVE_UNITS_TABLE);
+
+        db.close();
+
+        return numRows;
+    }
+
+    @SuppressLint("Range")
+    public ArrayList<Unit> getUnits()
+    {
+        ArrayList<Unit> listOfUnits = new ArrayList<Unit>();
+        String selectQuery = "SELECT * FROM " + ACTIVE_UNITS_TABLE + ";";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        Unit tempUnit = new Unit();
+
+        if(cursor.moveToFirst())
+        {
+            do
+            {
+                tempUnit.setGameID(cursor.getInt(cursor.getColumnIndex("gameID")));
+                //====boolean value here====\\
+                tempUnit.setName(cursor.getString(cursor.getColumnIndex("name")));
+                tempUnit.setMaxHealth(cursor.getInt(cursor.getColumnIndex("maxHealth")));
+                tempUnit.setCurHealth(cursor.getInt(cursor.getColumnIndex("currentHealth")));
+                tempUnit.setInitiative(cursor.getInt(cursor.getColumnIndex("initiative")));
+
+                listOfUnits.add(tempUnit);
+            }
+            while(cursor.moveToNext());
+        }
+
+        db.close();
+
+        return listOfUnits;
+    }
+
+
+    //end region
 }

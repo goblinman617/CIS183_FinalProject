@@ -6,17 +6,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ListView;
 
 import java.util.ArrayList;
 
 public class GamesPage extends AppCompatActivity {
     DatabaseHelper db;
-    ArrayList<String> usersGames = new ArrayList<>();
+    ArrayList<Game> usersGames = new ArrayList<>();
     Button btn_j_newGame;
     Button btn_j_logout;
     User currentUser;
-
+    ListView lv_j_games;
+    GameListAdapter adapter;
+    Intent playGame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,10 +30,19 @@ public class GamesPage extends AppCompatActivity {
 
         btn_j_newGame = findViewById(R.id.btn_games_newGame);
         btn_j_logout = findViewById(R.id.btn_games_logout);
+        lv_j_games = findViewById(R.id.lv_games);
 
         currentUser = getCurrentUser();
 
+        db = new DatabaseHelper(this);
+        db.initializeTables();
+        usersGames = db.getUsersGames();
+
+        playGame = new Intent(GamesPage.this, PlayGame.class);
+
         buttonEventHandler();
+        fillGamesListView();
+        currentGameUnits();
     }
 
     // For now this button just brings us to the PlayGame Intent
@@ -43,8 +57,7 @@ public class GamesPage extends AppCompatActivity {
                 // the DMUsername from 'Game' object
 
 
-                Intent playGame;
-                playGame = new Intent(GamesPage.this, PlayGame.class);
+                //playGame = new Intent(GamesPage.this, PlayGame.class);
                 playGame.putExtra("User", currentUser);
 
                 startActivity(playGame);
@@ -72,5 +85,21 @@ public class GamesPage extends AppCompatActivity {
             return null;
         }
         return curUser;
+    }
+
+    public void fillGamesListView()
+    {
+        adapter = new GameListAdapter(this, usersGames);
+        lv_j_games.setAdapter(adapter);
+    }
+
+    public void currentGameUnits()
+    {
+        lv_j_games.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                startActivity(playGame);
+            }
+        });
     }
 }

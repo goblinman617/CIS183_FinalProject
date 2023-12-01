@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Game {
     private int gameID;
     private String DMUsername;
+    private String gameName;
     private ArrayList<Unit> units;
 
     private final int maxSize = 12;
@@ -30,7 +31,8 @@ public class Game {
     public void setDMUsername(String DMUsername) {
         this.DMUsername = DMUsername;
     }
-
+    public String getGameName() { return gameName; }
+    public void setGameName(String gameName) { this.gameName = gameName; }
     public ArrayList<Unit> getUnits() {
         return units;
     }
