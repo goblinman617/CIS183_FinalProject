@@ -1,18 +1,19 @@
 package com.example.ttrpgmanager;
 
+import android.database.sqlite.SQLiteDatabase;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Game {
+public class Game implements Serializable {
     private int gameID;
     private String DMUsername;
     private String gameName;
     private ArrayList<Unit> units;
-
     private final int maxSize = 12;
 
     Game(){
-        // Create the arrayList in memory
-        units = new ArrayList<>();
+
     }
 
     //region Getters and Setters
@@ -54,7 +55,5 @@ public class Game {
             units.remove(i);
         }
     }
-
-
     //endregion
 }

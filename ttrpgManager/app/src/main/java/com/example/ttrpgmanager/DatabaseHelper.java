@@ -6,7 +6,9 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -21,7 +23,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String NPC_PREFABS_TABLE = "NpcPrefabs";
     public DatabaseHelper(Context context) {
         // change version to recreate the database
-        super(context, DATABASE_NAME, null, 3);
+        super(context, DATABASE_NAME, null, 6);
     }
 
     @Override
@@ -31,7 +33,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // AUTOINCREMENT is a SQLite keyword that should handle the creation of the primary key and make sure it doesn't repeat
         // Documentation: https://www.sqlite.org/autoinc.html
 
-        db.execSQL("CREATE TABLE " + USERS_TABLE + " (username TEXT PRIMARY KEY NOT NULL, password TEXT);");
+        db.execSQL("CREATE TABLE " + USERS_TABLE + " (username TEXT PRIMARY KEY NOT NULL, password TEXT NOT NULL);");
 
         // u1 (unit1) will contain a UnitID or it will be null (no unit)
         // currently the Games table is setup to hold 12 units (a mix of players and NPCS)
@@ -39,11 +41,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 " DMUsername TEXT NOT NULL, gameName TEXT, FOREIGN KEY (DMUsername)" +
                 " REFERENCES " + USERS_TABLE + "(Username));");
 
-        //is probably important to differentiate NPCS and Characters so we will include an isNpc BIT (boolean)
-        // In figma it doesn't look like we need to store temporary health separately so it was
-        // removed and the database version was changed.
         db.execSQL("CREATE TABLE " + ACTIVE_UNITS_TABLE + " (unitID INTEGER PRIMARY KEY AUTOINCREMENT," +
-                " gameID INT NOT NULL, isNpc BIT, name TEXT, maxHealth INT, currentHealth INT," +
+                " gameID INT NOT NULL, isNpc BOOLEAN NOT NULL CHECK (isNpc IN (0,1)), name TEXT, maxHealth INT, currentHealth INT," +
                 " initiative INT, FOREIGN KEY (gameID) REFERENCES " + GAMES_TABLE + "(gameID));");
 
         //we may not even end up using this table. I'll see what the designer wants
@@ -74,32 +73,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(rowsInUsersTable() == 0)
         {
             SQLiteDatabase db = this.getWritableDatabase();
+
             db.execSQL("INSERT INTO " + USERS_TABLE + " VALUES('DMleo', 'pass123');");
 
             db.close();
-
             initTables = true;
         }
         if(rowsInGamesTable() == 0)
         {
             SQLiteDatabase db = this.getWritableDatabase();
+
             db.execSQL("INSERT INTO " + GAMES_TABLE + " (DMUsername, gameName) VALUES('DMleo', 'Tower of Sycrus');");
 
             db.close();
-
             initTables = true;
         }
         if(rowsInUnitsTable() == 0)
         {
-            //how to handle the booleans??? once the isNpc bool works then units listview should work i think?
             SQLiteDatabase db = this.getWritableDatabase();
+
+            //how to handle the booleans??? once the isNpc bool works then units listview should work i think?
             db.execSQL("INSERT INTO " + ACTIVE_UNITS_TABLE + " (gameID, isNpc, name, maxHealth, currentHealth, initiative) " +
-                    " VALUES(1, 0, 'Noah', 100, 100, 0);");
+                    " VALUES(1, 0, 'Noah', 10, 10, 10);");
+
             db.execSQL("INSERT INTO " + ACTIVE_UNITS_TABLE + " (gameID, isNpc, name, maxHealth, currentHealth, initiative) " +
-                    " VALUES(1, 1, 'Xande', 100, 100, 0);");
+                    " VALUES(1, 1, 'Xande', 10, 0, 7);");
 
             db.close();
-
             initTables = true;
         }
 
@@ -130,14 +130,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         //cursor to cycle through
         Cursor cursor = db.rawQuery(selectQry, null);
-        //table variables
-
-        User tempUser = new User();
 
         if(cursor.moveToFirst())
         {
             do
             {
+                // Object must be created in the while loop
+                // I broke this earlier.
+                User tempUser = new User();
+
                 tempUser.setUsername(cursor.getString(cursor.getColumnIndex("username")));
                 tempUser.setPassword(cursor.getString(cursor.getColumnIndex("password")));
 
@@ -149,6 +150,85 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return listOfUsers;
     }
+    @SuppressLint("Range")
+    public User getUser(String username){
+        if (username.equals(null)){
+            return null;
+        }
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "SELECT * FROM " + USERS_TABLE + " WHERE username = '" + username + "';";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        User user = new User();
+
+        if (cursor.moveToFirst()){
+            user.setUsername(cursor.getString(cursor.getColumnIndex("username")));
+            user.setPassword(cursor.getString(cursor.getColumnIndex("password")));
+        }
+
+        return user;
+    }
+    public boolean registerUser(User newUser){
+        if (newUser.getUsername().equals("") || newUser.getPassword().equals("")){
+            return false;
+        }
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "SELECT * FROM " + USERS_TABLE + " WHERE username = '" + newUser.getUsername() + "';";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // If we can select the first entry from our query the username is taken
+        if (cursor.moveToFirst()){
+            db.close();
+            return false;
+        }
+        // closeReadableDb
+        db.close();
+
+        db = this.getWritableDatabase();
+
+        db.execSQL("INSERT INTO " + USERS_TABLE + " VALUES ('" + newUser.getUsername()
+                + "','" + newUser.getPassword() + "');");
+
+        db.close();
+        return true;
+    }
+
+    public boolean deleteUser(User curUser){
+
+        int rowsBefore = rowsInUsersTable();
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + USERS_TABLE + " WHERE username = '" + curUser.getUsername() + "';");
+        db.close();
+
+        int rowsAfter = rowsInUsersTable();
+
+        if (rowsAfter < rowsBefore){
+            // Did delete
+            return true;
+        }
+        return false;
+    }
+
+    public boolean validLogin(User curUser){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "SELECT (username) FROM " + USERS_TABLE + " WHERE username = '" + curUser.getUsername()
+                + "' AND password = '" + curUser.getPassword() + "';";
+
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()){
+            db.close();
+            return true;
+        }
+        db.close();
+        return false;
+    }
 
     //endregion
 
@@ -157,21 +237,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    // This function now accepts a String currentUsername and only returns the games for the user
     @SuppressLint("Range")
-    public ArrayList<Game> getUsersGames()
+    public ArrayList<Game> getUsersGames(String currentUsername)
     {
         ArrayList<Game> listOfGames = new ArrayList<Game>();
-        String selectQuery = "SELECT * FROM " + GAMES_TABLE + ";";
+        String selectQuery = "SELECT * FROM " + GAMES_TABLE + " WHERE DMUsername = '" + currentUsername + "';";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
-        Game tempGame = new Game();
 
         if(cursor.moveToFirst())
         {
             do
             {
-                //do i need the gameID too???
+                // This does need to be in the do while loop
+                // I put it in the wrong spot, sorry
+                Game tempGame = new Game();
+
                 tempGame.setGameID(cursor.getInt(cursor.getColumnIndex("gameID")));
                 tempGame.setDMUsername(cursor.getString(cursor.getColumnIndex("DMUsername")));
                 tempGame.setGameName(cursor.getString(cursor.getColumnIndex("gameName")));
@@ -183,6 +266,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
 
         return listOfGames;
+    }
+
+    @SuppressLint("Range")
+    public Game buildGame(Game game){
+        String selectQuery = "SELECT * FROM " + GAMES_TABLE + " WHERE gameID = " + game.getGameID() + ";";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+
+
+        if (cursor.moveToFirst()) {
+
+            // This information should already be set i think
+            game.setGameID(cursor.getInt(cursor.getColumnIndex("gameID")));
+            game.setDMUsername(cursor.getString(cursor.getColumnIndex("DMUsername")));
+            game.setGameName(cursor.getString(cursor.getColumnIndex("gameName")));
+
+            // Close DB so we can run another DB function
+            db.close();
+
+            game.setUnits(getUnitsByGameID(game.getGameID()));
+
+        }
+
+        return game;
     }
 
     public int rowsInGamesTable(){
@@ -208,6 +317,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return numRows;
     }
 
+    // I copied and pasted your whole function basically. I didn't want to change yours just in case
     @SuppressLint("Range")
     public ArrayList<Unit> getUnits()
     {
@@ -216,14 +326,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
-        Unit tempUnit = new Unit();
 
         if(cursor.moveToFirst())
         {
             do
             {
+                Unit tempUnit = new Unit();
+
+                tempUnit.setUnitID(cursor.getInt(cursor.getColumnIndex("unitID")));
                 tempUnit.setGameID(cursor.getInt(cursor.getColumnIndex("gameID")));
-                //====boolean value here====\\
+                tempUnit.setNPC(cursor.getInt(cursor.getColumnIndex("isNpc")));
                 tempUnit.setName(cursor.getString(cursor.getColumnIndex("name")));
                 tempUnit.setMaxHealth(cursor.getInt(cursor.getColumnIndex("maxHealth")));
                 tempUnit.setCurHealth(cursor.getInt(cursor.getColumnIndex("currentHealth")));
@@ -239,6 +351,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return listOfUnits;
     }
 
+    // basically your function
+    @SuppressLint("Range")
+    public ArrayList<Unit> getUnitsByGameID(int gameID)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<Unit> listOfUnits = new ArrayList<Unit>();
+        String selectQuery = "SELECT * FROM " + ACTIVE_UNITS_TABLE + " WHERE gameID = " + gameID + ";";
+        Cursor cursor = db.rawQuery(selectQuery, null);
 
-    //end region
+        if(cursor.moveToFirst())
+        {
+            do
+            {
+                Unit tempUnit = new Unit();
+
+                tempUnit.setUnitID(cursor.getInt(cursor.getColumnIndex("unitID")));
+                tempUnit.setGameID(cursor.getInt(cursor.getColumnIndex("gameID")));
+                tempUnit.setNPC(cursor.getInt(cursor.getColumnIndex("isNpc")));
+                tempUnit.setName(cursor.getString(cursor.getColumnIndex("name")));
+                tempUnit.setMaxHealth(cursor.getInt(cursor.getColumnIndex("maxHealth")));
+                tempUnit.setCurHealth(cursor.getInt(cursor.getColumnIndex("currentHealth")));
+                tempUnit.setInitiative(cursor.getInt(cursor.getColumnIndex("initiative")));
+
+                listOfUnits.add(tempUnit);
+            }
+            while(cursor.moveToNext());
+        }
+
+        db.close();
+
+        return listOfUnits;
+    }
+    //endregion
 }

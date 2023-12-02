@@ -4,23 +4,24 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 public class EditUnit extends AppCompatActivity {
     Button btn_j_submit;
-    User curUser;
-    Game curGame;
+    Game game;
+    DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_unit);
 
+        dbHelper = new DatabaseHelper(this);
+
         btn_j_submit = findViewById(R.id.btn_eu_submit);
 
-        curUser = getCurrentUser();
+        buildCurrentGame();
 
         // I think we will receive a 'User' and a 'Game' to pass back
 
@@ -36,22 +37,17 @@ public class EditUnit extends AppCompatActivity {
                 // pass the 'User' and the 'Game' back probably
 
                 Intent playGame = new Intent(EditUnit.this, PlayGame.class);
-                playGame.putExtra("User", curUser);
+                playGame.putExtra("Game", game);
                 startActivity(playGame);
             }
         });
     }
-
-    private User getCurrentUser(){
+    private void buildCurrentGame(){
         Intent cameFrom = getIntent();
 
-        User curUser;
-        curUser = (User) cameFrom.getSerializableExtra("User");
+        game = (Game) cameFrom.getSerializableExtra("Game");
 
-        if (curUser == null){
-            Log.d("Error", "No current user received");
-            return null;
-        }
-        return curUser;
+        // We don't need to rebuild the game when we're on this screen
+        //game = dbHelper.buildGame(game);
     }
 }

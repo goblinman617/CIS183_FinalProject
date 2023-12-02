@@ -53,9 +53,9 @@ public class UnitListAdapter extends BaseAdapter
         Unit unit = listOfUnits.get(i);
 
         tv_j_uc_charaName.setText(unit.getName());
-        tv_j_uc_curHP.setText(unit.getCurHealth());
+        tv_j_uc_curHP.setText(unit.getCurHealth() + "");
         //will add max health visual later
-        tv_j_uc_int.setText(unit.getInitiative());
+        tv_j_uc_int.setText(unit.getInitiative() + "");
 
         return view;
     }

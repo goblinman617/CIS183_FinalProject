@@ -1,7 +1,9 @@
 package com.example.ttrpgmanager;
 
 
-public class Unit {
+import java.io.Serializable;
+
+public class Unit implements Serializable {
     private int unitID;
     private int gameID;
     private boolean NPC;
@@ -37,6 +39,14 @@ public class Unit {
 
     public void setNPC(boolean NPC) {
         this.NPC = NPC;
+    }
+
+    public void setNPC(int NPC){
+        if (NPC == 1){
+            this.NPC = true;
+        }else {
+            this.NPC = false;
+        }
     }
 
     public String getName() {

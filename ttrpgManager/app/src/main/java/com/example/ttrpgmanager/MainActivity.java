@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import java.util.ArrayList;
 
@@ -14,8 +15,10 @@ public class MainActivity extends AppCompatActivity
 {
     Button btn_j_logIn;
     Intent gamePageIntent;
-    DatabaseHelper db;
+    DatabaseHelper dbHelper;
     ArrayList<User> listOfUsers;
+    EditText et_j_username;
+    EditText et_j_password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,17 +26,21 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         btn_j_logIn = findViewById(R.id.btn_v_logIn);
+        et_j_username = findViewById(R.id.et_v_username);
+        et_j_password = findViewById(R.id.et_v_password);
 
         //LogIn Button -> GamesPage
         gamePageIntent = new Intent(MainActivity.this, GamesPage.class);
 
-        db = new DatabaseHelper(this);
-        db.initializeTables();
-        listOfUsers = db.getAllUserRows();
+        dbHelper = new DatabaseHelper(this);
+        dbHelper.initializeTables();
+        listOfUsers = dbHelper.getAllUserRows();
 
         logInEventHandler();
 
+        // Debug commands
         //debugUserList();
+        debugFillLoginPage();
     }
 
     public void logInEventHandler()
@@ -41,20 +48,33 @@ public class MainActivity extends AppCompatActivity
         btn_j_logIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Currently this passes the user we created from db.initializeTables()
-                gamePageIntent.putExtra("User", listOfUsers.get(0));
+                String uname = et_j_username.getText().toString();
+                String pword = et_j_password.getText().toString();
 
-                startActivity(gamePageIntent);
+                User curUser = new User(uname,pword);
+
+                if (dbHelper.validLogin(curUser)) {
+
+                    gamePageIntent.putExtra("User", curUser);
+
+                    Log.d("Login", curUser.getUsername() + " has logged in");
+                    startActivity(gamePageIntent);
+                }else{
+                    // Display that the login information was wrong
+                    Log.d("Login", "Incorrect login information");
+                }
             }
         });
     }
 
     private void debugUserList(){
-        for (int i = 0; i < db.rowsInUsersTable(); i++){
-            Log.d("User at " + i, listOfUsers.get(i).getUsername());
-            Log.d("User at " + i, listOfUsers.get(i).getPassword());
+        for (int i = 0; i < listOfUsers.size(); i++){
+            Log.d("User at " + i, listOfUsers.get(i).getUsername() + " " + listOfUsers.get(i).getPassword());
         }
     }
 
-
+    private void debugFillLoginPage(){
+        et_j_username.setText("DMleo");
+        et_j_password.setText("pass123");
+    }
 }

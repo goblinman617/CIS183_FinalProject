@@ -11,17 +11,20 @@ import android.widget.Button;
 public class AddUnit extends AppCompatActivity {
     Button btn_j_back;
     Button btn_j_submit;
-    User curUser;
+    Game game;
+    DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_unit);
 
+        dbHelper = new DatabaseHelper(this);
+
         btn_j_back = findViewById(R.id.btn_au_back);
         btn_j_submit = findViewById(R.id.btn_au_submit);
 
-        curUser = getCurrentUser();
+        buildCurrentGame();
 
         buttonEventHandler();
     }
@@ -33,7 +36,7 @@ public class AddUnit extends AppCompatActivity {
                 // just goes back to playGame intent
 
                 Intent playGame = new Intent(AddUnit.this, PlayGame.class);
-                playGame.putExtra("User", curUser);
+                playGame.putExtra("Game", game);
                 startActivity(playGame);
             }
         });
@@ -41,26 +44,21 @@ public class AddUnit extends AppCompatActivity {
         btn_j_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // adds to database
-                // adds unit to the current game
+                // Needs to add unit to unit table
 
                 Intent playGame = new Intent(AddUnit.this, PlayGame.class);
-                playGame.putExtra("User", curUser);
+                playGame.putExtra("Game", game);
                 startActivity(playGame);
             }
         });
     }
 
-    private User getCurrentUser(){
+
+    private void buildCurrentGame(){
         Intent cameFrom = getIntent();
 
-        User curUser;
-        curUser = (User) cameFrom.getSerializableExtra("User");
-
-        if (curUser == null){
-            Log.d("Error", "No current user received");
-            return null;
-        }
-        return curUser;
+        //It's fine that we store this in curGame
+        game = (Game) cameFrom.getSerializableExtra("Game");
+        game = dbHelper.buildGame(game);
     }
 }
