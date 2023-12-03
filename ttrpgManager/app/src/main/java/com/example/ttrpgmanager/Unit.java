@@ -11,6 +11,7 @@ public class Unit implements Serializable {
     private int maxHealth;
     private int curHealth;
     private int initiative;
+    private boolean myTurn;
 
     Unit(){
 
@@ -80,5 +81,18 @@ public class Unit implements Serializable {
     public void setInitiative(int initiative) {
         this.initiative = initiative;
     }
+    public boolean isMyTurn(){
+        return myTurn;
+    }
+    public void setMyTurn(boolean myTurn){
+        this.myTurn = myTurn;
+    }
+    public void setMyTurn(int myTurn){
+        if (myTurn == 1){
+            this.myTurn = true;
+        }
+        this.myTurn = false;
+    }
+
     //endregion
 }

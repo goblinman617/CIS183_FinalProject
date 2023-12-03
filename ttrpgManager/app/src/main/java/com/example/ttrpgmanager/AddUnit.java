@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -24,7 +23,7 @@ public class AddUnit extends AppCompatActivity {
         btn_j_back = findViewById(R.id.btn_au_back);
         btn_j_submit = findViewById(R.id.btn_au_submit);
 
-        buildCurrentGame();
+        getPrevGame();
 
         buttonEventHandler();
     }
@@ -54,11 +53,12 @@ public class AddUnit extends AppCompatActivity {
     }
 
 
-    private void buildCurrentGame(){
+    private void getPrevGame(){
         Intent cameFrom = getIntent();
 
-        //It's fine that we store this in curGame
         game = (Game) cameFrom.getSerializableExtra("Game");
-        game = dbHelper.buildGame(game);
+
+        // We don't need
+        //game = dbHelper.buildGame(game);
     }
 }

@@ -44,6 +44,7 @@ public class GamesPage extends AppCompatActivity {
         buttonEventHandler();
         fillGamesListView();
         currentGameUnits();
+        Log.d("gameID",usersGames.get(0).getGameID()+"");
     }
 
     // For now this button just brings us to the PlayGame Intent

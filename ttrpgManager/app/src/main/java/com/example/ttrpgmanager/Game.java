@@ -1,5 +1,6 @@
 package com.example.ttrpgmanager;
 
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.io.Serializable;
@@ -10,10 +11,14 @@ public class Game implements Serializable {
     private String DMUsername;
     private String gameName;
     private ArrayList<Unit> units;
-    private final int maxSize = 12;
+    // We no longer have a max size of units
 
     Game(){
 
+    }
+    Game(String uname, String gameName){
+        DMUsername = uname;
+        this.gameName = gameName;
     }
 
     //region Getters and Setters
@@ -37,23 +42,8 @@ public class Game implements Serializable {
     public ArrayList<Unit> getUnits() {
         return units;
     }
-
     public void setUnits(ArrayList<Unit> units) {
-        if (units.size() <= maxSize) {
-            this.units = units;
-        }
-    }
-
-    public void addUnit(Unit unit){
-        if (units.size() < maxSize) {
-            this.units.add(unit);
-        }
-    }
-
-    public void removeUnitAtIndex(int i){
-        if (units.get(i) != null){
-            units.remove(i);
-        }
+        this.units = units;
     }
     //endregion
 }

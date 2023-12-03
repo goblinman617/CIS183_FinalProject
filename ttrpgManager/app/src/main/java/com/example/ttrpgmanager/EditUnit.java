@@ -21,7 +21,7 @@ public class EditUnit extends AppCompatActivity {
 
         btn_j_submit = findViewById(R.id.btn_eu_submit);
 
-        buildCurrentGame();
+        getPrevGame();
 
         // I think we will receive a 'User' and a 'Game' to pass back
 
@@ -42,7 +42,7 @@ public class EditUnit extends AppCompatActivity {
             }
         });
     }
-    private void buildCurrentGame(){
+    private void getPrevGame(){
         Intent cameFrom = getIntent();
 
         game = (Game) cameFrom.getSerializableExtra("Game");
