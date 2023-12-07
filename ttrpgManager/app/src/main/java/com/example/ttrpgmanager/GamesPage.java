@@ -52,29 +52,6 @@ public class GamesPage extends AppCompatActivity {
         btn_j_newGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //// To do
-                // Create Game in database
-                // Delete game in database
-                // Update game in database
-                // Create unit in database
-                // Delete unit in database
-                // Update unit in database
-
-                // Update user in database? maybe
-
-                ////// Done
-                //// boolean dbHelper.registerUser(User)
-                // Checks if username and password are valid. password just can't be null
-
-                //// boolean dbHelper.deleteUser(User)
-                // True if deletion occurred
-
-                //// Game dbHelper.buildGame(Game)
-                // Accepts a 'Game' object but only needs to have a gameID to work.
-
-                // Remember to initialize dbHelper before you try and use the database functions.
-                // I spent like an hour trying to figure out why it kept crashing
-
 
 
                 //Intent createGame = new Intent(this, createGame.class);

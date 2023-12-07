@@ -25,7 +25,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //region Database
     public DatabaseHelper(Context context) {
         // change version to recreate the database
-        super(context, DATABASE_NAME, null, 7);
+        super(context, DATABASE_NAME, null, 8);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 " REFERENCES " + USERS_TABLE + "(username));");
 
         db.execSQL("CREATE TABLE " + ACTIVE_UNITS_TABLE + " (unitID INTEGER PRIMARY KEY AUTOINCREMENT," +
-                " gameID INT NOT NULL, isNpc BOOLEAN NOT NULL CHECK (isNpc IN (0,1)), name TEXT, maxHealth INT, currentHealth INT," +
+                " gameID INT NOT NULL, isNpc INT, name TEXT, maxHealth INT, currentHealth INT," +
                 " initiative INT, myTurn INT, FOREIGN KEY (gameID) REFERENCES " + GAMES_TABLE + "(gameID));");
 
         //we may not even end up using this table. I'll see what the designer wants
@@ -93,7 +93,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(rowsInUnitsTable() == 0)
         {
             SQLiteDatabase db = this.getWritableDatabase();
-
             //how to handle the booleans??? once the isNpc bool works then units listview should work i think?
             db.execSQL("INSERT INTO " + ACTIVE_UNITS_TABLE + " (gameID, isNpc, name, maxHealth, currentHealth, initiative, myTurn) " +
                     " VALUES(1, 0, 'Noah', 10, 10, 7, 0);");
@@ -183,7 +182,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String selectQuery = "SELECT (username) FROM " + USERS_TABLE + " WHERE username = '" + newUser.getUsername() + "';";
+        String selectQuery = "SELECT username FROM " + USERS_TABLE + " WHERE username = '" + newUser.getUsername() + "';";
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         // Username is taken
@@ -223,7 +222,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public boolean validateLogin(User curUser){
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String selectQuery = "SELECT (username) FROM " + USERS_TABLE + " WHERE username = '" + curUser.getUsername()
+        String selectQuery = "SELECT username FROM " + USERS_TABLE + " WHERE username = '" + curUser.getUsername()
                 + "' AND password = '" + curUser.getPassword() + "';";
 
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -250,7 +249,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         SQLiteDatabase db = this.getReadableDatabase();
-        String selectQuery = "SELECT (gameID) FROM " + GAMES_TABLE + " WHERE DMUsername = '" + game.getDMUsername() + "' AND gameName = '"
+        String selectQuery = "SELECT gameID FROM " + GAMES_TABLE + " WHERE DMUsername = '" + game.getDMUsername() + "' AND gameName = '"
                 + game.getGameName() + "';";
 
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -261,6 +260,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             Log.d("db error check", "User already has a game with that name");
             return false;
         }
+
         db.close();
         db = this.getWritableDatabase();
 
@@ -360,9 +360,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             game.setUnits(getUnitsByGameID(game.getGameID()));
 
+            setUnitTurnIfNoneExists(game.getGameID());
         }
-
         db.close();
+
         return game;
     }
 
@@ -380,7 +381,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @SuppressLint("Range")
     private Game fillGameIDByNames(Game game){
         SQLiteDatabase db = this.getReadableDatabase();
-        String selectQuery = "SELECT (gameID) FROM " + GAMES_TABLE + " WHERE DMUsername = '" + game.getDMUsername()
+        String selectQuery = "SELECT gameID FROM " + GAMES_TABLE + " WHERE DMUsername = '" + game.getDMUsername()
                 + "' AND gameName = '" + game.getGameName() + "';";
 
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -412,15 +413,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return numRows;
     }
 
-    // I copied and pasted your whole function basically. I didn't want to change yours just in case
+    // This is your function. I copied and pasted the whole thing. sorry...
     @SuppressLint("Range")
-    public ArrayList<Unit> getUnits()
+    public ArrayList<Unit> getUnitsByGameID(int gameID)
     {
-        ArrayList<Unit> listOfUnits = new ArrayList<Unit>();
-        String selectQuery = "SELECT * FROM " + ACTIVE_UNITS_TABLE + ";";
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<Unit> listOfUnits = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + ACTIVE_UNITS_TABLE + " WHERE gameID = " + gameID + " ORDER BY initiative DESC, name DESC;";
         Cursor cursor = db.rawQuery(selectQuery, null);
-
 
         if(cursor.moveToFirst())
         {
@@ -435,6 +435,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 tempUnit.setMaxHealth(cursor.getInt(cursor.getColumnIndex("maxHealth")));
                 tempUnit.setCurHealth(cursor.getInt(cursor.getColumnIndex("currentHealth")));
                 tempUnit.setInitiative(cursor.getInt(cursor.getColumnIndex("initiative")));
+                tempUnit.setMyTurn(cursor.getInt(cursor.getColumnIndex("myTurn")));
 
                 listOfUnits.add(tempUnit);
             }
@@ -446,39 +447,76 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return listOfUnits;
     }
 
-    @SuppressLint("Range")
-    public ArrayList<Unit> getUnitsByGameID(int gameID)
-    {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ArrayList<Unit> listOfUnits = new ArrayList<Unit>();
-        String selectQuery = "SELECT * FROM " + ACTIVE_UNITS_TABLE + " WHERE gameID = " + gameID + " ORDER BY initiative DESC;";
-        Cursor cursor = db.rawQuery(selectQuery, null);
+    public void advanceTurn(Game game){
+        ArrayList<Unit> unitList = getUnitsByGameID(game.getGameID());
 
-        if(cursor.moveToFirst())
-        {
-            do
-            {
-                Unit tempUnit = new Unit();
+        int unitID[] = new int[2];
 
-                tempUnit.setUnitID(cursor.getInt(cursor.getColumnIndex("unitID")));
-                tempUnit.setGameID(cursor.getInt(cursor.getColumnIndex("gameID")));
-                tempUnit.setNPC(cursor.getInt(cursor.getColumnIndex("isNpc")));
-                tempUnit.setName(cursor.getString(cursor.getColumnIndex("name")));
-                tempUnit.setMaxHealth(cursor.getInt(cursor.getColumnIndex("maxHealth")));
-                tempUnit.setCurHealth(cursor.getInt(cursor.getColumnIndex("currentHealth")));
-                tempUnit.setInitiative(cursor.getInt(cursor.getColumnIndex("initiative")));
+        for (int i = 0; i < unitList.size(); i++){
+            if (unitList.get(i).isMyTurn()){
+                unitID[0] = unitList.get(i).getUnitID();
 
-                // I think we need to keep track of if its the unit's turn in the Units table
-                //tempUnit.setMyTurn(cursor.getInt(cursor.getColumnIndex("turn")));
+                // if
+                if (i+1 == unitList.size()){
+                    i=0;
+                }else{
+                    i++;
+                }
 
-                listOfUnits.add(tempUnit);
+                unitID[1] = unitList.get(i).getUnitID();
+
+                break;
             }
-            while(cursor.moveToNext());
         }
 
+        swapTurnState(unitID[0], unitID[1]);
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+    }
+
+    public boolean addUnit(Unit u){
+        if (u.getGameID() == 0){
+            Log.d("db error check", "no game id");
+            return false;
+        }
+        // all other fields should be error checked when filled out
+
+        String insertQuery = "INSERT INTO " + ACTIVE_UNITS_TABLE + " (gameID, isNPC, name, maxHealth, currentHealth, initiative, myTurn) " +
+                "VALUES(" + u.getGameID() + "," + u.isNPC() + ",'" + u.getName()
+                + "'," + u.getMaxHealth() + "," + u.getCurHealth() + ","+ u.getInitiative() + "," + u.isMyTurn() + ");";
+        // boolean values are stored as 0,1 in the database
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL(insertQuery);
         db.close();
 
-        return listOfUnits;
+        return true;
+    }
+
+    public void updateUnit(Unit u){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.execSQL("UPDATE " + ACTIVE_UNITS_TABLE + " SET isNPC = " + u.isNPC() + ", name = '" + u.getName() +
+                "', maxHealth = " + u.getMaxHealth() + ", currentHealth = " + u.getCurHealth() + ", initiative = " + u.getInitiative() +
+                " WHERE unitID = " + u.getUnitID() + ";");
+
+        db.close();
+    }
+
+    public boolean deleteUnit(Unit u){
+        int rowsBefore = rowsInUnitsTable();
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + ACTIVE_UNITS_TABLE + " WHERE unitID = " + u.getUnitID() + ";");
+        db.close();
+
+        int rowsAfter = rowsInUnitsTable();
+
+        if (rowsBefore > rowsAfter){
+            return true;
+        }
+        return false;
     }
 
     //region Private Functions
@@ -498,6 +536,73 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             Log.d("db success", (rowsBefore - rowsAfter) + " Units Deleted");
         }
     }
+
+    private void swapTurnState(int cur, int next){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.execSQL("UPDATE " + ACTIVE_UNITS_TABLE + " SET myTurn = " + 0 + " WHERE unitID = " + cur + ";");
+        db.execSQL("UPDATE " + ACTIVE_UNITS_TABLE + " SET myTurn = " + 1 + " WHERE unitID = " + next + ";");
+
+        db.close();
+    }
+
+    @SuppressLint("Range")
+    private void setUnitTurnIfNoneExists(int gameID){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "SELECT myTurn, unitID FROM " + ACTIVE_UNITS_TABLE + " WHERE gameID = " + gameID + " ORDER BY initiative DESC;";
+
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+
+        boolean gameUnitHasMyTurn = false;
+        ArrayList<Integer> unitIDs = new ArrayList<>();
+
+        if (cursor.moveToFirst()){
+            do  {
+                // its the units turn
+                // and no other unit in query says its their turn
+                if (cursor.getInt(cursor.getColumnIndex("myTurn")) == 1 && gameUnitHasMyTurn == false) {
+                    gameUnitHasMyTurn = true;
+                } else if (cursor.getInt(cursor.getColumnIndex("myTurn")) == 1){
+                    Log.d("db error check", "another has myTurn = 1");
+                    unitIDs.add(cursor.getInt(cursor.getColumnIndex("unitID")));
+                }
+            }while (cursor.moveToNext());
+
+            // set first unit myTurn to true if non have myTurn = true
+            if (gameUnitHasMyTurn == false){
+                cursor.moveToFirst();
+                int firstUnitID = cursor.getInt(cursor.getColumnIndex("unitID"));
+
+                db.close();
+                db = this.getWritableDatabase();
+                db.execSQL("UPDATE " + ACTIVE_UNITS_TABLE + " SET myTurn = 1 WHERE unitID = " + firstUnitID + ";");
+                //close the db outside of this statement
+            }
+        }
+
+        db.close();
+
+        if (unitIDs.size() > 0){
+            setMyTurnFalse(unitIDs);
+        }
+    }
+
+    private void setMyTurnFalse(ArrayList<Integer> unitWrongTurn){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String updateQuery;
+
+        for (int i = 0; i < unitWrongTurn.size(); i++) {
+            updateQuery = "UPDATE " + ACTIVE_UNITS_TABLE + " SET myTurn = 0 WHERE unitID = " + unitWrongTurn.get(i) + ";";
+
+            db.execSQL(updateQuery);
+            Log.d("db error check", "unit id " + unitWrongTurn.get(i) + " myTurn set to false. More than 1 myTurn was true");
+        }
+
+        db.close();
+    }
+
     //endregion
     //endregion
     //=================

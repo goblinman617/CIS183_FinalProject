@@ -38,7 +38,7 @@ public class PlayGame extends AppCompatActivity {
         buttonEventHandler();
         fillUnitListView();
 
-        //debugAllGameInfo();
+        debugAllGameInfo();
     }
 
     private void buttonEventHandler(){
@@ -46,7 +46,7 @@ public class PlayGame extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Go to edit the unit
-                // Pass the 'User', 'Game', and 'unit'
+                // Pass the 'Game', and 'Unit'
 
                 Intent editUnit = new Intent(PlayGame.this, EditUnit.class);
                 editUnit.putExtra("Game", game);
@@ -66,6 +66,7 @@ public class PlayGame extends AppCompatActivity {
         btn_j_addUnit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // go to create a new unit
                 Intent addUnit = new Intent(PlayGame.this, AddUnit.class);
                 addUnit.putExtra("Game", game);
                 startActivity(addUnit);
@@ -75,7 +76,9 @@ public class PlayGame extends AppCompatActivity {
         btn_j_advanceTurn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("btn", "Advances turn in the list view");
+                dbHelper.advanceTurn(game);
+                buildCurrentGame();
+                debugAllGameInfo();
             }
         });
     }
@@ -104,12 +107,12 @@ public class PlayGame extends AppCompatActivity {
         Log.d("=====================", "=========================");
         Log.d("unitID", "Info");
         for (int i = 0; i < game.getUnits().size(); i++){
-            Log.d("" + game.getUnits().get(i).getUnitID(), "" + game.getUnits().get(i).getGameID());
             Log.d("" + game.getUnits().get(i).getUnitID(), "" + game.getUnits().get(i).getName());
             Log.d("" + game.getUnits().get(i).getUnitID(), "npc " + game.getUnits().get(i).isNPC());
             Log.d("" + game.getUnits().get(i).getUnitID(), "" + game.getUnits().get(i).getCurHealth() + " cur hp");
             Log.d("" + game.getUnits().get(i).getUnitID(), "" + game.getUnits().get(i).getMaxHealth() + " max hp");
             Log.d("" + game.getUnits().get(i).getUnitID(), "init. " + game.getUnits().get(i).getInitiative());
+            Log.d("" + game.getUnits().get(i).getUnitID(), "myTurn " + game.getUnits().get(i).isMyTurn());
             Log.d("=====================", "=====================");
         }
     }

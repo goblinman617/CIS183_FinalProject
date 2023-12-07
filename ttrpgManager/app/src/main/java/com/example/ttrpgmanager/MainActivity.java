@@ -41,44 +41,6 @@ public class MainActivity extends AppCompatActivity
         // Debug commands
         debugFillLoginPage();
 
-        User newUser = new User("userTest", "example password");
-        // Doesn't allow new users with the same username
-        dbHelper.registerUser(newUser);
-        dbHelper.registerUser(newUser);
-
-        // Doesn't allow users with a blank field
-        dbHelper.registerUser(new User("test", ""));
-        dbHelper.registerUser(new User("", "test"));
-
-        // Deletes a user by username
-        dbHelper.deleteUser(newUser);
-
-        Log.d("UserRows", dbHelper.rowsInUsersTable() + "");
-
-
-        // Doesn't allow new games with the same username and gameName
-        dbHelper.createNewGame(new Game("DMleo", "Tower of Sycrus"));
-        // Doesn't allow blank gameName
-        dbHelper.createNewGame(new Game("DMleo", ""));
-
-        // Builds the game from the database with just username and gameName
-        // This means we can pass the same 'Game' object we used to for dbHelper.createNewGame(Game)
-        // To the "PlayGame" Page with no issue.
-        Game myGame = new Game("testing", "Testing of Testing");
-        dbHelper.createNewGame(myGame);
-        myGame = dbHelper.buildGame(myGame);
-        Log.d("myGame ID", myGame.getGameID() + "");
-
-        dbHelper.deleteGame(myGame);
-        Log.d("GameRows", dbHelper.rowsInGamesTable() + "");
-
-        // This will delete the game we initialize by default
-        dbHelper.deleteGame(new Game("DMleo", "Tower of Sycrus"));
-        // You can see that this function also deletes the units associated with the
-        dbHelper.initializeTables();
-        Log.d("GameRows", dbHelper.rowsInGamesTable() + "");
-        Log.d("UnitRows", dbHelper.rowsInUnitsTable() + "");
-
     }
 
     public void logInEventHandler()
@@ -116,3 +78,13 @@ public class MainActivity extends AppCompatActivity
         et_j_password.setText("pass123");
     }
 }
+
+//TODO User
+// dbHelper.updateUser(User) ?
+
+
+//TODO Game
+// updateGame(Game) allow user to change game name
+
+
+//TODO Unit

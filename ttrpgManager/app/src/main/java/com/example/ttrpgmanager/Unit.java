@@ -17,6 +17,16 @@ public class Unit implements Serializable {
 
     }
 
+    Unit(int gid, boolean npc, String name, int mh, int ch, int init, boolean mTurn){
+        gameID = gid;
+        NPC = npc;
+        this.name = name;
+        maxHealth = mh;
+        curHealth = ch;
+        initiative = init;
+        myTurn = mTurn;
+    }
+
     //region Getters and Setters
     public int getUnitID() {
         return unitID;
@@ -90,8 +100,9 @@ public class Unit implements Serializable {
     public void setMyTurn(int myTurn){
         if (myTurn == 1){
             this.myTurn = true;
+        }else {
+            this.myTurn = false;
         }
-        this.myTurn = false;
     }
 
     //endregion
