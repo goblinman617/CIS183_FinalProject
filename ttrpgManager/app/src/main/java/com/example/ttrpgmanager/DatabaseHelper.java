@@ -154,6 +154,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return listOfUsers;
     }
+
+    // Returns null on no user found
     @SuppressLint("Range")
     public User getUser(String username){
         if (username.equals(null)){
@@ -170,9 +172,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()){
             user.setUsername(cursor.getString(cursor.getColumnIndex("username")));
             user.setPassword(cursor.getString(cursor.getColumnIndex("password")));
-        }
 
-        return user;
+            return user;
+        }
+        Log.d("db error check", "no user found");
+        return null;
     }
     public boolean registerUser(User newUser){
         if (newUser.getUsername().equals("") || newUser.getPassword().equals("")){
@@ -202,6 +206,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
+    // returns true on successful delete
     public boolean deleteUser(User curUser){
 
         int rowsBefore = rowsInUsersTable();
@@ -219,6 +224,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return false;
     }
 
+    public void updateUser(User user){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.execSQL("UPDATE " + USERS_TABLE + " SET password = '" + user.getPassword() + "' WHERE username = '" + user.getUsername() + "';");
+
+        db.close();
+    }
+
+    // returns true if username and password are correct
     public boolean validateLogin(User curUser){
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -241,7 +255,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //=================
     //region GamesTable
 
-    // Creates a game using a 'Game' object. It checks
+    // 'Game' must contain a DMUsername and gameName
     public boolean createNewGame(Game game){
         if (game.getGameName().equals("")){
             Log.d("db error check", "Empty game name");
@@ -273,9 +287,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
+    // 'Game' contains gameID or DMUsername and gameName
     public boolean deleteGame(Game game){
         if (game.getGameID() == 0){ // int defaults to 0. The autoincrement starts at 1
-            game = fillGameIDByNames(game);
+            game = fillGameIDByNames(game); // fillGameIDByNames returns null if no game is found
             if (game == null){
                 Log.d("db error check", "No matching game");
                 return false;
@@ -301,7 +316,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return false;
     }
 
-    // This function now accepts a String currentUsername and only returns the games for the user
+    public void updateGame(Game game){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.execSQL("UPDATE " + GAMES_TABLE + " SET gameName = '" + game.getGameName() + "' WHERE gameID = " + game.getGameID() + ";");
+
+        db.close();
+    }
+
+    // returns games owned by username
     @SuppressLint("Range")
     public ArrayList<Game> getUsersGames(String currentUsername)
     {
@@ -332,7 +355,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return listOfGames;
     }
 
-    // This function returns the matching game from the Game.gameID OR matching username and gameName
+    // returns matching game by gameID or DMUsername and gameName
     @SuppressLint("Range")
     public Game buildGame(Game game){
         if (game.getGameID() == 0){ // int defaults to 0. The autoincrement starts at 1
@@ -475,6 +498,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    // no error checking besides missing game ID
     public boolean addUnit(Unit u){
         if (u.getGameID() == 0){
             Log.d("db error check", "no game id");

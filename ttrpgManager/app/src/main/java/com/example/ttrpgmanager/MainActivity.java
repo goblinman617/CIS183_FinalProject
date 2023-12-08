@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity
 
         // Debug commands
         debugFillLoginPage();
+        //debugUserList();
 
     }
 
@@ -80,11 +81,7 @@ public class MainActivity extends AppCompatActivity
 }
 
 //TODO User
-// dbHelper.updateUser(User) ?
-
 
 //TODO Game
-// updateGame(Game) allow user to change game name
-
 
 //TODO Unit

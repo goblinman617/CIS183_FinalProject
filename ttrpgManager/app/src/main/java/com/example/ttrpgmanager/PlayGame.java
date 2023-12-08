@@ -106,7 +106,7 @@ public class PlayGame extends AppCompatActivity {
         Log.d("" + game.getGameID(), "" + game.getDMUsername());
         Log.d("=====================", "=========================");
         Log.d("unitID", "Info");
-        for (int i = 0; i < game.getUnits().size(); i++){
+        for (int i = 0; i < game.getUnits().size(); i++) {
             Log.d("" + game.getUnits().get(i).getUnitID(), "" + game.getUnits().get(i).getName());
             Log.d("" + game.getUnits().get(i).getUnitID(), "npc " + game.getUnits().get(i).isNPC());
             Log.d("" + game.getUnits().get(i).getUnitID(), "" + game.getUnits().get(i).getCurHealth() + " cur hp");

@@ -14,11 +14,12 @@ public class Game implements Serializable {
     // We no longer have a max size of units
 
     Game(){
-
+        units = new ArrayList<>();
     }
     Game(String uname, String gameName){
         DMUsername = uname;
         this.gameName = gameName;
+        units = new ArrayList<>();
     }
 
     //region Getters and Setters
