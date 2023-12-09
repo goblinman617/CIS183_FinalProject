@@ -13,6 +13,7 @@ public class NewGame extends AppCompatActivity {
     Button btn_j_createGame;
     Button btn_j_back;
     Game game;
+    User user;
     DatabaseHelper dbHelper;
 
     @Override
@@ -27,6 +28,9 @@ public class NewGame extends AppCompatActivity {
         dbHelper = new DatabaseHelper(this);
         dbHelper.initializeTables();
 
+        Intent cameFrom = getIntent();
+        user = (User) cameFrom.getSerializableExtra("User");
+
         buttonEventHandler();
     }
 
@@ -35,7 +39,12 @@ public class NewGame extends AppCompatActivity {
         btn_j_createGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent playGame = new Intent(NewGame.this, PlayGame.class);
+
+                String name = et_j_gameName.getText().toString();
+                Game newGame = new Game(user.getUsername(), name);
+                dbHelper.createNewGame(newGame);
+
+                Intent playGame = new Intent(NewGame.this, GamesPage.class);
                 startActivity(playGame);
             }
         });

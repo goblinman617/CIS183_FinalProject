@@ -10,6 +10,8 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+
 public class PlayGame extends AppCompatActivity {
     DatabaseHelper dbHelper;
     Button btn_j_unitClicked;
@@ -45,12 +47,14 @@ public class PlayGame extends AppCompatActivity {
     private void buttonEventHandler(){
         lv_j_units.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int i, long id) {
                 // Go to edit the unit
                 // Pass the 'Game', and 'Unit'
 
                 Intent editUnit = new Intent(PlayGame.this, EditUnit.class);
-                //editUnit.putExtra("Game", game);
+                //need to get game by unit position
+                editUnit.putExtra("Unit", game.getUnits().get(i));
+                editUnit.putExtra("Game", game);
                 startActivity(editUnit);
             }
         });

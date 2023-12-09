@@ -47,15 +47,12 @@ public class GamesPage extends AppCompatActivity {
         Log.d("gameID",usersGames.get(0).getGameID()+"");
     }
 
-    // For now this button just brings us to the PlayGame Intent
     private void buttonEventHandler(){
         btn_j_newGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 Intent createGame = new Intent(GamesPage.this, NewGame.class);
-                //createGame.putExtra("User", currentUser);
+                createGame.putExtra("User", user);
                 startActivity(createGame);
             }
         });

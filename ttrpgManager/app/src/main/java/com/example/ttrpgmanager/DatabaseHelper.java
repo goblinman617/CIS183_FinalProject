@@ -175,6 +175,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             return user;
         }
+        db.close();
         Log.d("db error check", "no user found");
         return null;
     }
