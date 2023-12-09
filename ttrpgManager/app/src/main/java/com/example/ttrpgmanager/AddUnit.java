@@ -9,7 +9,7 @@ import android.widget.Button;
 
 public class AddUnit extends AppCompatActivity {
     Button btn_j_back;
-    Button btn_j_submit;
+    Button btn_j_add;
     Game game;
     DatabaseHelper dbHelper;
 
@@ -21,7 +21,7 @@ public class AddUnit extends AppCompatActivity {
         dbHelper = new DatabaseHelper(this);
 
         btn_j_back = findViewById(R.id.btn_au_back);
-        btn_j_submit = findViewById(R.id.btn_au_submit);
+        btn_j_add = findViewById(R.id.btn_au_add);
 
         getPrevGame();
 
@@ -40,7 +40,7 @@ public class AddUnit extends AppCompatActivity {
             }
         });
 
-        btn_j_submit.setOnClickListener(new View.OnClickListener() {
+        btn_j_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Needs to add unit to unit table

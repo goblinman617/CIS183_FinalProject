@@ -43,7 +43,7 @@ public class GamesPage extends AppCompatActivity {
 
         buttonEventHandler();
         fillGamesListView();
-        currentGameUnits();
+        gameListView();
         Log.d("gameID",usersGames.get(0).getGameID()+"");
     }
 
@@ -54,9 +54,9 @@ public class GamesPage extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                //Intent createGame = new Intent(this, createGame.class);
+                Intent createGame = new Intent(GamesPage.this, NewGame.class);
                 //createGame.putExtra("User", currentUser);
-                //startActivity(createGame);
+                startActivity(createGame);
             }
         });
 
@@ -96,7 +96,7 @@ public class GamesPage extends AppCompatActivity {
         lv_j_games.setAdapter(adapter);
     }
 
-    public void currentGameUnits()
+    public void gameListView()
     {
         lv_j_games.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

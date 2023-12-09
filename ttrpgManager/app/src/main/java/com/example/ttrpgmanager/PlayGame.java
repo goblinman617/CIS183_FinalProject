@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -42,14 +43,14 @@ public class PlayGame extends AppCompatActivity {
     }
 
     private void buttonEventHandler(){
-        btn_j_unitClicked.setOnClickListener(new View.OnClickListener() {
+        lv_j_units.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Go to edit the unit
                 // Pass the 'Game', and 'Unit'
 
                 Intent editUnit = new Intent(PlayGame.this, EditUnit.class);
-                editUnit.putExtra("Game", game);
+                //editUnit.putExtra("Game", game);
                 startActivity(editUnit);
             }
         });

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity
 {
     Button btn_j_logIn;
+    Button btn_j_register;
     Intent gamePageIntent;
     DatabaseHelper dbHelper;
     ArrayList<User> listOfUsers;
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         btn_j_logIn = findViewById(R.id.btn_v_logIn);
+        btn_j_register = findViewById(R.id.btn_v_register);
         et_j_username = findViewById(R.id.et_v_username);
         et_j_password = findViewById(R.id.et_v_password);
 
@@ -37,6 +39,7 @@ public class MainActivity extends AppCompatActivity
         listOfUsers = dbHelper.getAllUserRows();
 
         logInEventHandler();
+        registerEventHandler();
 
         // Debug commands
         debugFillLoginPage();
@@ -64,6 +67,17 @@ public class MainActivity extends AppCompatActivity
                     // Display that the login information was wrong
                     Log.d("Login", "Incorrect login information");
                 }
+            }
+        });
+    }
+
+    public void registerEventHandler()
+    {
+        btn_j_register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent register = new Intent(MainActivity.this, Register.class);
+                startActivity(register);
             }
         });
     }

@@ -2,7 +2,6 @@ package com.example.ttrpgmanager;
 
 import android.app.Activity;
 import android.content.Context;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,13 +46,13 @@ public class UnitListAdapter extends BaseAdapter
         }
 
         TextView tv_j_uc_charaName = view.findViewById(R.id.tv_uc_charaName);
-        TextView tv_j_uc_curHP = view.findViewById(R.id.tv_uc_curHP);
+        TextView tv_j_uc_HP = view.findViewById(R.id.tv_uc_HP);
         TextView tv_j_uc_int = view.findViewById(R.id.tv_uc_int);
 
         Unit unit = listOfUnits.get(i);
 
         tv_j_uc_charaName.setText(unit.getName());
-        tv_j_uc_curHP.setText(unit.getCurHealth() + "");
+        tv_j_uc_HP.setText(unit.getCurHealth() + "" + " / " + unit.getMaxHealth() + "");
         //will add max health visual later
         tv_j_uc_int.setText(unit.getInitiative() + "");
 
