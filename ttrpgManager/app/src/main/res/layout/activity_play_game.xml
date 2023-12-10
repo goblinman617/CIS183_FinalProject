@@ -7,12 +7,35 @@
     android:background="#302D29"
     tools:context=".PlayGame">
 
+    <ImageView
+        android:id="@+id/imageView8"
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
+        android:layout_marginBottom="-12dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_play_advanceTurn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/gradient_2" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="150dp"
+        android:layout_height="75dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/box1" />
+
     <ListView
         android:id="@+id/lv_play_units"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="1dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="1dp"
+        android:layout_marginBottom="20dp"
         android:background="#00FFFFFF"
         app:layout_constraintBottom_toTopOf="@+id/btn_play_advanceTurn"
         app:layout_constraintEnd_toEndOf="parent"
@@ -24,11 +47,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="144dp"
-        android:layout_marginBottom="4dp"
+        android:fontFamily="sans-serif-medium"
         android:text="HP"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/lv_play_units"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_play_back"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
@@ -36,6 +59,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="44dp"
+        android:fontFamily="sans-serif-medium"
         android:text="Int."
         android:textColor="#FFFFFF"
         android:textSize="24sp"
@@ -44,21 +68,24 @@
 
     <Button
         android:id="@+id/btn_play_addUnit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="68dp"
-        android:background="#FFFFFF"
+        android:layout_width="109dp"
+        android:layout_height="58dp"
+        android:layout_marginEnd="58dp"
+        android:background="#00FFFFFF"
         android:text="Add"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/btn_play_update"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/btn_play_update"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
-        android:layout_marginBottom="24dp"
+        android:layout_width="109dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="58dp"
+        android:layout_marginBottom="16dp"
+        android:background="#00FFFFFF"
         android:text="Manage"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -68,7 +95,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
+        android:backgroundTint="#26231F"
         android:text="Back"
+        android:textColor="#FFFFFF"
         app:layout_constraintEnd_toStartOf="@+id/tv_play_hp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -77,11 +106,32 @@
         android:id="@+id/btn_play_advanceTurn"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="18dp"
+        android:layout_marginBottom="24dp"
         android:background="#26231F"
         app:layout_constraintBottom_toTopOf="@+id/btn_play_addUnit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@mipmap/arrow_down" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="500dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-30dp"
+        android:translationX="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/line" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="150dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="42dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/box1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
