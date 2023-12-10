@@ -42,6 +42,10 @@ public class UpdateUser extends AppCompatActivity {
 
         et_j_username.setText(user.getUsername());
 
+        // I have it so they cannot change their username right now.
+        // so I have it not let them edit their username
+        et_j_username.setEnabled(false);
+
         buttonEventHandler();
     }
 

@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity
 
         // Debug commands
         debugFillLoginPage();
-        //debugUserList();
+        debugUserList();
 
     }
 
@@ -97,9 +97,3 @@ public class MainActivity extends AppCompatActivity
         et_j_password.setText("pass123");
     }
 }
-
-//TODO User
-
-//TODO Game
-
-//TODO Unit

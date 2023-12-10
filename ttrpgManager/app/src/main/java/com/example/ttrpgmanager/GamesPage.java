@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -22,7 +23,6 @@ public class GamesPage extends AppCompatActivity {
     ListView lv_j_games;
     GameListAdapter adapter;
     Intent playGame;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +45,6 @@ public class GamesPage extends AppCompatActivity {
 
         buttonEventHandler();
         fillGamesListView();
-        gameListView();
 
         //breaks app when new user logs in
         //Log.d("gameID",usersGames.get(0).getGameID()+"");
@@ -104,20 +103,6 @@ public class GamesPage extends AppCompatActivity {
     {
         adapter = new GameListAdapter(this, usersGames);
         lv_j_games.setAdapter(adapter);
-    }
-
-    public void gameListView()
-    {
-        lv_j_games.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                playGame.putExtra("Game", usersGames.get(position));
-                playGame.putExtra("User", user);
-                startActivity(playGame);
-
-            }
-        });
     }
 
     private void debugLogGamesUnits(ArrayList<Unit> units){

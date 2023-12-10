@@ -14,6 +14,8 @@ public class Game implements Serializable {
     // We no longer have a max size of units
 
     Game(){
+        gameID = 0;
+        DMUsername = null;
         units = new ArrayList<>();
     }
     Game(String uname, String gameName){

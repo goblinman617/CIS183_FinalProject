@@ -21,7 +21,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // NPC they could "save NPC for future use". If they wanted to add that same NPC to the scene again they wouldn't need to fill in its stats.
     private static final String NPC_PREFABS_TABLE = "NpcPrefabs";
 
-    //=================
+
     //region Database
     public DatabaseHelper(Context context) {
         // change version to recreate the database
@@ -107,9 +107,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return initTables;
     }
     //endregion
-    //=================
 
-    //=================
     //region UserTable
     //checks if anything is in the users table
     public int rowsInUsersTable()
@@ -251,9 +249,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     //endregion
-    //=================
 
-    //=================
     //region GamesTable
 
     // 'Game' must contain a DMUsername and gameName
@@ -359,7 +355,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // returns matching game by gameID or DMUsername and gameName
     @SuppressLint("Range")
     public Game buildGame(Game game){
-        if (game.getGameID() == 0){ // int defaults to 0. The autoincrement starts at 1
+        if (game.getGameID() == 0){
             game = fillGameIDByNames(game);
             if (game == null){
                 Log.d("db error check", "No matching game");
@@ -422,9 +418,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
     //endregion
     //endregion
-    //=================
 
-    //=================
     //region UnitsTable
     public int rowsInUnitsTable()
     {
@@ -630,5 +624,5 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //endregion
     //endregion
-    //=================
+
 }

@@ -34,7 +34,7 @@ public class UpdateGame extends AppCompatActivity {
         dbHelper = new DatabaseHelper(this);
         dbHelper.initializeTables();
 
-        intent = new Intent(UpdateGame.this, PlayGame.class);
+        intent = new Intent(UpdateGame.this, GamesPage.class);
 
         Intent cameFrom = getIntent();
         game = (Game) cameFrom.getSerializableExtra("Game");
