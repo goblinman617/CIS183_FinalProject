@@ -46,7 +46,9 @@ public class GamesPage extends AppCompatActivity {
         buttonEventHandler();
         fillGamesListView();
         gameListView();
-        Log.d("gameID",usersGames.get(0).getGameID()+"");
+
+        //breaks app when new user logs in
+        //Log.d("gameID",usersGames.get(0).getGameID()+"");
     }
 
     private void buttonEventHandler(){
