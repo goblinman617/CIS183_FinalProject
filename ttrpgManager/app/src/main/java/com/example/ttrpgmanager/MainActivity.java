@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity
     ArrayList<User> listOfUsers;
     EditText et_j_username;
     EditText et_j_password;
+    TextView txt_j_error;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,7 @@ public class MainActivity extends AppCompatActivity
         btn_j_register = findViewById(R.id.btn_v_register);
         et_j_username = findViewById(R.id.et_v_username);
         et_j_password = findViewById(R.id.et_v_password);
+        txt_j_error = findViewById(R.id.tv_errorMsg);
 
         //LogIn Button -> GamesPage
         gamePageIntent = new Intent(MainActivity.this, GamesPage.class);
@@ -58,13 +61,14 @@ public class MainActivity extends AppCompatActivity
                 User curUser = new User(uname,pword);
 
                 if (dbHelper.validateLogin(curUser)) {
-
+                    txt_j_error.setVisibility(View.INVISIBLE);
                     gamePageIntent.putExtra("User", curUser);
 
                     Log.d("Login", curUser.getUsername() + " has logged in");
                     startActivity(gamePageIntent);
                 }else{
                     // Display that the login information was wrong
+                    txt_j_error.setVisibility(View.VISIBLE);
                     Log.d("Login", "Incorrect login information");
                 }
             }
