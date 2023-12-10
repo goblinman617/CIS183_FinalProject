@@ -6,6 +6,31 @@
     android:layout_height="match_parent"
     android:background="#00FFFFFF">
 
+    <ImageView
+        android:id="@+id/img_uc_2"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:rotation="0"
+        android:scaleType="fitXY"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/gradient_2" />
+
+    <ImageView
+        android:id="@+id/img_uc_1"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:rotation="180"
+        android:scaleType="fitXY"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/gradient_2" />
+
     <TextView
         android:id="@+id/tv_uc_charaName"
         android:layout_width="150sp"
@@ -31,7 +56,6 @@
         android:layout_marginEnd="12dp"
         android:background="#26231F"
         android:paddingTop="4sp"
-        android:text="100/100"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="14sp"
@@ -52,5 +76,33 @@
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_uc_cur_health"
+        android:layout_width="35sp"
+        android:layout_height="34sp"
+        android:layout_marginStart="10dp"
+        android:background="#0026231F"
+        android:paddingTop="4sp"
+        android:text="cur"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_uc_HP"
+        app:layout_constraintStart_toStartOf="@+id/tv_uc_HP" />
+
+    <TextView
+        android:id="@+id/tv_uc_max_health"
+        android:layout_width="50sp"
+        android:layout_height="34sp"
+        android:layout_marginEnd="10dp"
+        android:background="#0026231F"
+        android:paddingTop="4sp"
+        android:text="/ max"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_uc_HP"
+        app:layout_constraintEnd_toEndOf="@+id/tv_uc_HP" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

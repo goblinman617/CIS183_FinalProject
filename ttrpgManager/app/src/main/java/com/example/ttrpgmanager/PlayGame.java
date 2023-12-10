@@ -43,7 +43,7 @@ public class PlayGame extends AppCompatActivity {
         buttonEventHandler();
         fillUnitListView();
 
-        debugAllGameInfo();
+        //debugAllGameInfo();
     }
 
     private void buttonEventHandler(){
@@ -83,7 +83,9 @@ public class PlayGame extends AppCompatActivity {
             public void onClick(View v) {
                 dbHelper.advanceTurn(game);
                 buildCurrentGame();
-                debugAllGameInfo();
+                fillUnitListView();
+                //debugAllGameInfo();
+                unitAdapter.notifyDataSetChanged();
             }
         });
 

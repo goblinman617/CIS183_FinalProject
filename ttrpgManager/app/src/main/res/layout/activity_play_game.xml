@@ -33,20 +33,21 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="1dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="1dp"
         android:layout_marginBottom="20dp"
         android:background="#00FFFFFF"
         app:layout_constraintBottom_toTopOf="@+id/btn_play_advanceTurn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_play_back" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_play_hp" />
 
     <TextView
         android:id="@+id/tv_play_hp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="144dp"
+        android:layout_marginBottom="-8dp"
         android:fontFamily="sans-serif-medium"
         android:text="HP"
         android:textColor="#FFFFFF"
@@ -74,6 +75,7 @@
         android:background="#00FFFFFF"
         android:text="Add"
         android:textColor="#FFFFFF"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/btn_play_update"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -86,6 +88,7 @@
         android:background="#00FFFFFF"
         android:text="Manage"
         android:textColor="#FFFFFF"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -93,8 +96,8 @@
         android:id="@+id/btn_play_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="100dp"
         android:backgroundTint="#26231F"
         android:text="Back"
         android:textColor="#FFFFFF"
@@ -115,7 +118,7 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="500dp"
+        android:layout_width="600dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="-30dp"
         android:translationX="40dp"
