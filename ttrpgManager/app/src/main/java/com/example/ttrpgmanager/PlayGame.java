@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 public class PlayGame extends AppCompatActivity {
@@ -15,7 +16,7 @@ public class PlayGame extends AppCompatActivity {
     Button btn_j_unitClicked;
     Button btn_j_back;
     Button btn_j_addUnit;
-    Button btn_j_advanceTurn;
+    ImageButton btn_j_advanceTurn;
     Button btn_j_updateGame;
     Game game;
     User user;

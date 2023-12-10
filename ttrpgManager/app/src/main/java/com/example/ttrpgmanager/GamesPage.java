@@ -105,6 +105,7 @@ public class GamesPage extends AppCompatActivity {
         lv_j_games.setAdapter(adapter);
     }
 
+
     private void debugLogGamesUnits(ArrayList<Unit> units){
         for (int i = 0; i < units.size(); i++){
             Log.d("UnitList at " + i, units.get(i).getName());

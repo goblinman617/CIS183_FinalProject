@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#302D29"
     tools:context=".PlayGame">
 
     <ListView
@@ -11,25 +12,24 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="1dp"
-        android:layout_marginTop="72dp"
         android:layout_marginEnd="1dp"
-        android:background="#F9F9F9"
+        android:background="#00FFFFFF"
         app:layout_constraintBottom_toTopOf="@+id/btn_play_advanceTurn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_play_back" />
 
     <TextView
         android:id="@+id/tv_play_hp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="144dp"
+        android:layout_marginBottom="4dp"
         android:text="HP"
-        android:textColor="#000000"
+        android:textColor="#FFFFFF"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/lv_play_units"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/textView3"
@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="44dp"
         android:text="Int."
-        android:textColor="#000000"
+        android:textColor="#FFFFFF"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_play_hp" />
@@ -47,7 +47,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="68dp"
-        android:text="Add Unit"
+        android:background="#FFFFFF"
+        android:text="Add"
         app:layout_constraintBottom_toBottomOf="@+id/btn_play_update"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -57,7 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="36dp"
         android:layout_marginBottom="24dp"
-        android:text="Update Game"
+        android:text="Manage"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -72,13 +73,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <ImageButton
         android:id="@+id/btn_play_advanceTurn"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="84dp"
-        android:text="\\/"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="50dp"
+        android:layout_marginBottom="18dp"
+        android:background="#26231F"
+        app:layout_constraintBottom_toTopOf="@+id/btn_play_addUnit"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@mipmap/arrow_down" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
