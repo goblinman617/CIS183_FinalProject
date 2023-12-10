@@ -6,6 +6,19 @@
     android:layout_height="match_parent"
     tools:context=".AddUnit">
 
+    <TextView
+        android:id="@+id/tv_au_errorMsg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Field cannot be empty"
+        android:textColor="#FF0000"
+        android:textSize="16sp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_au_unitName" />
+
     <EditText
         android:id="@+id/et_au_unitName"
         android:layout_width="205dp"

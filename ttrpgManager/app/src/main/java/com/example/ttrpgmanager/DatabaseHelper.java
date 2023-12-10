@@ -509,7 +509,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         String insertQuery = "INSERT INTO " + ACTIVE_UNITS_TABLE + " (gameID, isNPC, name, maxHealth, currentHealth, initiative, myTurn) " +
                 "VALUES(" + u.getGameID() + "," + u.isNPC() + ",'" + u.getName()
-                + "'," + u.getMaxHealth() + "," + u.getCurHealth() + ","+ u.getInitiative() + "," + u.isMyTurn() + ");";
+                + "'," + u.getCurHealth() + "," + u.getMaxHealth() + ","+ u.getInitiative() + "," + u.isMyTurn() + ");";
         // boolean values are stored as 0,1 in the database
 
         SQLiteDatabase db = this.getWritableDatabase();

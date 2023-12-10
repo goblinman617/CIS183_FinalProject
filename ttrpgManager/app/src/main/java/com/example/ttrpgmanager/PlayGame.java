@@ -10,15 +10,15 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
-import java.util.ArrayList;
-
 public class PlayGame extends AppCompatActivity {
     DatabaseHelper dbHelper;
     Button btn_j_unitClicked;
     Button btn_j_back;
     Button btn_j_addUnit;
     Button btn_j_advanceTurn;
+    Button btn_j_updateGame;
     Game game;
+    User user;
     ListView lv_j_units;
     UnitListAdapter unitAdapter;
 
@@ -27,9 +27,10 @@ public class PlayGame extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_game);
 
-        btn_j_unitClicked = findViewById(R.id.btn_play_unitClicked);
+        btn_j_unitClicked = findViewById(R.id.btn_play_back);
         btn_j_back = findViewById(R.id.btn_play_back);
         btn_j_addUnit = findViewById(R.id.btn_play_addUnit);
+        btn_j_updateGame = findViewById(R.id.btn_play_update);
         btn_j_advanceTurn = findViewById(R.id.btn_play_advanceTurn);
         lv_j_units = findViewById(R.id.lv_play_units);
 
@@ -45,12 +46,10 @@ public class PlayGame extends AppCompatActivity {
     }
 
     private void buttonEventHandler(){
+        //go to edit unit
         lv_j_units.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int i, long id) {
-                // Go to edit the unit
-                // Pass the 'Game', and 'Unit'
-
                 Intent editUnit = new Intent(PlayGame.this, EditUnit.class);
                 //need to get game by unit position
                 editUnit.putExtra("Unit", game.getUnits().get(i));
@@ -84,6 +83,21 @@ public class PlayGame extends AppCompatActivity {
                 dbHelper.advanceTurn(game);
                 buildCurrentGame();
                 debugAllGameInfo();
+            }
+        });
+
+        btn_j_updateGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent cameFrom = getIntent();
+                user = (User) cameFrom.getSerializableExtra("User");
+
+                Intent updateGame = new Intent(PlayGame.this, UpdateGame.class);
+                updateGame.putExtra("Game", game);
+                updateGame.putExtra("User", user);
+
+                startActivity(updateGame);
             }
         });
     }

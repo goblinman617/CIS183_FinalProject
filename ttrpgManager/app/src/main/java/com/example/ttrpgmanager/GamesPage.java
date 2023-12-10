@@ -17,6 +17,7 @@ public class GamesPage extends AppCompatActivity {
     ArrayList<Game> usersGames = new ArrayList<>();
     Button btn_j_newGame;
     Button btn_j_logout;
+    Button btn_j_update;
     User user;
     ListView lv_j_games;
     GameListAdapter adapter;
@@ -33,6 +34,7 @@ public class GamesPage extends AppCompatActivity {
 
         btn_j_newGame = findViewById(R.id.btn_games_newGame);
         btn_j_logout = findViewById(R.id.btn_games_logout);
+        btn_j_update = findViewById(R.id.btn_games_update);
         lv_j_games = findViewById(R.id.lv_games);
 
         user = getCurrentUser();
@@ -54,6 +56,15 @@ public class GamesPage extends AppCompatActivity {
                 Intent createGame = new Intent(GamesPage.this, NewGame.class);
                 createGame.putExtra("User", user);
                 startActivity(createGame);
+            }
+        });
+
+        btn_j_update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent update = new Intent(GamesPage.this, UpdateUser.class);
+                update.putExtra("User", user);
+                startActivity(update);
             }
         });
 
@@ -100,6 +111,7 @@ public class GamesPage extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 playGame.putExtra("Game", usersGames.get(position));
+                playGame.putExtra("User", user);
                 startActivity(playGame);
 
             }
