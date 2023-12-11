@@ -83,7 +83,7 @@
 
     <Button
         android:id="@+id/btn_games_newGame"
-        android:layout_width="200dp"
+        android:layout_width="340dp"
         android:layout_height="50dp"
         android:layout_marginBottom="16dp"
         android:background="#00FFFFFF"
