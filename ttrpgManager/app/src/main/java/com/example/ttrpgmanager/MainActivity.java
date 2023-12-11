@@ -45,8 +45,8 @@ public class MainActivity extends AppCompatActivity
         registerEventHandler();
 
         // Debug commands
-        debugFillLoginPage();
-        debugUserList();
+        //debugFillLoginPage();
+        //debugUserList();
 
     }
 

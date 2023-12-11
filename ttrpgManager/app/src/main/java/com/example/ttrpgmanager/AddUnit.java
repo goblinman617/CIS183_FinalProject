@@ -73,6 +73,7 @@ public class AddUnit extends AppCompatActivity {
                     dbHelper.addUnit(unit);
 
                     Intent playGame = new Intent(AddUnit.this, PlayGame.class);
+                    playGame.putExtra("Game", game);
                     startActivity(playGame);
                 }
             }
